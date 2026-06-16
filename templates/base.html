@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Flask ToDo{% endblock %}</title>
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+    <div class="container">
+        <header class="header">
+            <h1>📝 Flask ToDo</h1>
+
+            <nav>
+                <a href="{{ url_for('index') }}">Головна</a>
+            </nav>
+        </header>
+
+        {% block content %}
+        {% endblock %}
+    </div>
+
+</body>
+</html>

@@ -6,22 +6,22 @@
 
 {% block content %}
 <div class="top-bar">
-    <a class="back-link" href="{{ url_for('tasks', page=page) }}">← До списку задач</a>
+    <a class="back-link" href="{{ url_for('tasks', **list_args) }}">← До списку задач</a>
 </div>
 
 <article class="task-detail">
     <div class="task-detail-meta">
-        <span class="task-id">Задача #{{ task.id }}</span>
+        <span class="task-id">Задача #{{ task.id }} · створено {{ task.created_at_display }}</span>
         <span class="status status-{{ task.status.name }}">{{ task.status.label }}</span>
     </div>
 
     <h2 class="task-detail-title">{{ task.title }}</h2>
 
     <div class="form-actions">
-        <a class="button" href="{{ url_for('edit_task', task_id=task.id) }}">✏️ Редагувати</a>
+        <a class="button" href="{{ url_for('edit_task', task_id=task.id, **list_args) }}">✏️ Редагувати</a>
 
-        <form method="post" action="{{ url_for('delete_task', task_id=task.id) }}"
-              onsubmit="return confirm('Видалити задачу «{{ task.title|e }}»?');">
+        <form method="post" action="{{ url_for('delete_task', task_id=task.id, **list_args) }}"
+              onsubmit='return confirm({{ ("Видалити задачу «" ~ task.title ~ "»?")|tojson }});'>
             <button class="button button-danger" type="submit">🗑 Видалити</button>
         </form>
     </div>

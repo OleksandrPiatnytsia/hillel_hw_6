@@ -24,10 +24,10 @@
 {% if total %}
 <div class="stats-grid">
     {% for status, count in stats %}
-    <div class="stat-card">
+    <a class="stat-card" href="{{ url_for('tasks', status=status.value) }}">
         <span class="status status-{{ status.name }}">{{ status.label }}</span>
         <div class="stat-count">{{ count }}</div>
-    </div>
+    </a>
     {% endfor %}
 </div>
 

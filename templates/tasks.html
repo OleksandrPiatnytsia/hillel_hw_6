@@ -13,11 +13,42 @@
     </a>
 </div>
 
+{% if total_all %}
+<div class="list-controls">
+    <nav class="filter-tabs">
+        <a class="filter-tab {% if not current_status %}active{% endif %}"
+           href="{{ url_for('tasks', sort=sort_param) }}">
+            Усі <span class="filter-count">{{ total_all }}</span>
+        </a>
+        {% for status in statuses %}
+        <a class="filter-tab {% if current_status == status.value %}active{% endif %}"
+           href="{{ url_for('tasks', status=status.value, sort=sort_param) }}">
+            {{ status.label }} <span class="filter-count">{{ counts[status.value] }}</span>
+        </a>
+        {% endfor %}
+    </nav>
+
+    <nav class="sort-options">
+        <span class="sort-label">Сортування:</span>
+        {% for key, label in sort_options.items() %}
+        <a class="filter-tab {% if current_sort == key %}active{% endif %}"
+           href="{{ url_for('tasks', status=status_param, sort=(None if key == 'newest' else key)) }}">
+            {{ label }}
+        </a>
+        {% endfor %}
+    </nav>
+</div>
+{% endif %}
+
 {% if tasks %}
 <div class="tasks-grid">
     {% for task in tasks %}
-    <a class="task-card" href="{{ url_for('task_detail', task_id=task.id) }}">
-        <h3 class="task-title" title="{{ task.title }}">{{ task.title }}</h3>
+    <a class="task-card"
+       href="{{ url_for('task_detail', task_id=task.id, status=status_param, sort=sort_param, page=(page if page > 1 else None)) }}">
+        <div class="task-main">
+            <h3 class="task-title" title="{{ task.title }}">{{ task.title }}</h3>
+            <span class="task-date">📅 {{ task.created_at_display }}</span>
+        </div>
         <span class="status status-{{ task.status.name }}">{{ task.status.label }}</span>
     </a>
     {% endfor %}
@@ -26,7 +57,7 @@
 {% if total_pages > 1 %}
 <nav class="pagination">
     {% if page > 1 %}
-    <a class="page-link" href="{{ url_for('tasks', page=page - 1) }}">← Назад</a>
+    <a class="page-link" href="{{ url_for('tasks', page=page - 1, status=status_param, sort=sort_param) }}">← Назад</a>
     {% else %}
     <span class="page-link disabled">← Назад</span>
     {% endif %}
@@ -35,17 +66,22 @@
         {% if p == page %}
         <span class="page-link active">{{ p }}</span>
         {% else %}
-        <a class="page-link" href="{{ url_for('tasks', page=p) }}">{{ p }}</a>
+        <a class="page-link" href="{{ url_for('tasks', page=p, status=status_param, sort=sort_param) }}">{{ p }}</a>
         {% endif %}
     {% endfor %}
 
     {% if page < total_pages %}
-    <a class="page-link" href="{{ url_for('tasks', page=page + 1) }}">Далі →</a>
+    <a class="page-link" href="{{ url_for('tasks', page=page + 1, status=status_param, sort=sort_param) }}">Далі →</a>
     {% else %}
     <span class="page-link disabled">Далі →</span>
     {% endif %}
 </nav>
 {% endif %}
+{% elif total_all %}
+<div class="empty-state">
+    <h3>Задач з таким статусом немає</h3>
+    <p><a class="back-link" href="{{ url_for('tasks', sort=sort_param) }}">Показати всі задачі</a></p>
+</div>
 {% else %}
 <div class="empty-state">
     <h3>Поки що задач немає</h3>

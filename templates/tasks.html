@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+
+{% block title %}
+Задачі
+{% endblock %}
+
+{% block content %}
+<div class="top-bar">
+    <h2>Список задач</h2>
+
+    <a class="button" href="#">
+        + Додати задачу
+    </a>
+</div>
+
+{% if tasks %}
+<div class="tasks-grid">
+    {% for task in tasks %}
+    <div class="task-card">
+        <h3 class="task-title">{{ task.title }}</h3>
+        <span class="status status-{{ task.status.name }}">{{ task.status.label }}</span>
+    </div>
+    {% endfor %}
+</div>
+{% else %}
+<div class="empty-state">
+    <h3>Поки що задач немає</h3>
+    <p>Створи першу задачу.</p>
+</div>
+{% endif %}
+{% endblock %}

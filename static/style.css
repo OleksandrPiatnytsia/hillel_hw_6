@@ -67,3 +67,55 @@ body {
     grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
     gap: 20px;
 }
+
+.task-card {
+    background: #1e293b;
+    border: 1px solid #334155;
+    border-radius: 16px;
+    padding: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px;
+}
+
+.task-title {
+    font-size: 18px;
+    font-weight: 500;
+}
+
+.status {
+    font-size: 13px;
+    padding: 4px 12px;
+    border-radius: 999px;
+    white-space: nowrap;
+}
+
+.status-new {
+    background: #1e3a8a;
+    color: #bfdbfe;
+}
+
+.status-in_progress {
+    background: #78350f;
+    color: #fde68a;
+}
+
+.status-done {
+    background: #14532d;
+    color: #bbf7d0;
+}
+
+.empty-state {
+    text-align: center;
+    padding: 60px 20px;
+    background: #1e293b;
+    border: 1px dashed #334155;
+    border-radius: 16px;
+    color: #94a3b8;
+}
+
+.empty-state h3 {
+    color: #f8fafc;
+    margin-bottom: 8px;
+}

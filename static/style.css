@@ -326,3 +326,11 @@ a.task-card:hover {
     line-height: 1.4;
     overflow-wrap: anywhere;
 }
+
+.button-danger {
+    background: #b91c1c;
+}
+
+.button-danger:hover {
+    background: #991b1b;
+}

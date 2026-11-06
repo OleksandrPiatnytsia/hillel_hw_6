@@ -133,5 +133,21 @@ def edit_task(task_id: int):
     )
 
 
+@app.route("/tasks/<int:task_id>/delete", methods=["POST"])
+def delete_task(task_id: int):
+    all_tasks = get_tasks()
+    position = next((i for i, t in enumerate(all_tasks) if t.id == task_id), None)
+    if position is None:
+        abort(404)
+
+    all_tasks.pop(position)
+    save_tasks(all_tasks)
+
+    # повертаємось на ту сторінку списку, де була задача
+    # (якщо після видалення вона спорожніла, /tasks сам перекине на останню)
+    page = position // TASKS_PER_PAGE + 1
+    return redirect(url_for("tasks", page=page))
+
+
 if __name__ == "__main__":
     app.run(debug=True, port=8000)

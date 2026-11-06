@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+
+{% block title %}
+{{ task.title }}
+{% endblock %}
+
+{% block content %}
+<div class="top-bar">
+    <a class="back-link" href="{{ url_for('tasks', page=page) }}">← До списку задач</a>
+</div>
+
+<article class="task-detail">
+    <div class="task-detail-meta">
+        <span class="task-id">Задача #{{ task.id }}</span>
+        <span class="status status-{{ task.status.name }}">{{ task.status.label }}</span>
+    </div>
+
+    <h2 class="task-detail-title">{{ task.title }}</h2>
+
+    <div class="form-actions">
+        <a class="button" href="{{ url_for('edit_task', task_id=task.id) }}">✏️ Редагувати</a>
+    </div>
+</article>
+{% endblock %}

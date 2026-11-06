@@ -5,16 +5,39 @@
 {% endblock %}
 
 {% block content %}
+<section class="hero">
+    <h2>Привіт! 👋</h2>
+    <p>
+        Це простий ToDo-застосунок на Flask: тут можна переглядати свої задачі
+        та додавати нові. Задачі зберігаються у JSON-файлі.
+    </p>
+</section>
+
 <div class="top-bar">
-    <h2>Список задач</h2>
+    <h2>Мої задачі: {{ total }}</h2>
 
     <a class="button" href="{{ url_for('add_task') }}">
         + Додати задачу
     </a>
 </div>
 
+{% if total %}
+<div class="stats-grid">
+    {% for status, count in stats %}
+    <div class="stat-card">
+        <span class="status status-{{ status.name }}">{{ status.label }}</span>
+        <div class="stat-count">{{ count }}</div>
+    </div>
+    {% endfor %}
+</div>
+
+<a class="button button-secondary" href="{{ url_for('tasks') }}">
+    Переглянути всі задачі →
+</a>
+{% else %}
 <div class="empty-state">
     <h3>Поки що задач немає</h3>
     <p>Створи першу задачу.</p>
 </div>
+{% endif %}
 {% endblock %}

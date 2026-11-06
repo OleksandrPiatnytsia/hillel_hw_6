@@ -16,7 +16,12 @@ def save_tasks(tasks: list[Task]) -> None:
 
 @app.route("/")
 def index():
-    return render_template("index.html")
+    all_tasks = get_tasks()
+    stats = [
+        (status, sum(1 for task in all_tasks if task.status == status))
+        for status in TaskStatus
+    ]
+    return render_template("index.html", total=len(all_tasks), stats=stats)
 
 
 @app.route("/tasks")

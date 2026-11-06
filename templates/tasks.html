@@ -16,10 +16,10 @@
 {% if tasks %}
 <div class="tasks-grid">
     {% for task in tasks %}
-    <div class="task-card">
+    <a class="task-card" href="{{ url_for('task_detail', task_id=task.id) }}">
         <h3 class="task-title" title="{{ task.title }}">{{ task.title }}</h3>
         <span class="status status-{{ task.status.name }}">{{ task.status.label }}</span>
-    </div>
+    </a>
     {% endfor %}
 </div>
 

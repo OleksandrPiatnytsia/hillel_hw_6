@@ -1,4 +1,4 @@
-from flask import Flask, redirect, render_template, request, url_for
+from flask import Flask, abort, redirect, render_template, request, url_for
 
 from models.clases import Task, TaskStatus
 from serialization.json_serialization import JsonDataSerialization
@@ -46,6 +46,28 @@ def tasks():
     )
 
 
+@app.route("/tasks/<int:task_id>")
+def task_detail(task_id: int):
+    all_tasks = get_tasks()
+
+    for position, task in enumerate(all_tasks):
+        if task.id == task_id:
+            # сторінка списку, на якій знаходиться ця задача (для кнопки "Назад")
+            page = position // TASKS_PER_PAGE + 1
+            return render_template("task_detail.html", task=task, page=page)
+
+    abort(404)
+
+
+def validate_task_form(title: str, status: str) -> str | None:
+    """Повертає текст помилки або None, якщо дані форми коректні."""
+    if not title:
+        return "Назва задачі не може бути порожньою"
+    if status not in [s.value for s in TaskStatus]:
+        return "Невідомий статус"
+    return None
+
+
 @app.route("/tasks/add", methods=["GET", "POST"])
 def add_task():
     error = None
@@ -55,12 +77,9 @@ def add_task():
     if request.method == "POST":
         title = request.form.get("title", "").strip()
         status = request.form.get("status", TaskStatus.new.value)
+        error = validate_task_form(title, status)
 
-        if not title:
-            error = "Назва задачі не може бути порожньою"
-        elif status not in [s.value for s in TaskStatus]:
-            error = "Невідомий статус"
-        else:
+        if error is None:
             all_tasks = get_tasks()
             new_id = max((task.id for task in all_tasks), default=0) + 1
             all_tasks.append(Task(new_id, title, TaskStatus(status)))
@@ -69,7 +88,44 @@ def add_task():
             return redirect(url_for("tasks", page=last_page))
 
     return render_template(
-        "add_task.html",
+        "task_form.html",
+        heading="Нова задача",
+        action_url=url_for("add_task"),
+        cancel_url=url_for("tasks"),
+        statuses=TaskStatus,
+        error=error,
+        title=title,
+        selected_status=status,
+    )
+
+
+@app.route("/tasks/<int:task_id>/edit", methods=["GET", "POST"])
+def edit_task(task_id: int):
+    all_tasks = get_tasks()
+    task = next((t for t in all_tasks if t.id == task_id), None)
+    if task is None:
+        abort(404)
+
+    error = None
+    title = task.title
+    status = task.status.value
+
+    if request.method == "POST":
+        title = request.form.get("title", "").strip()
+        status = request.form.get("status", task.status.value)
+        error = validate_task_form(title, status)
+
+        if error is None:
+            task.title = title
+            task.status = TaskStatus(status)
+            save_tasks(all_tasks)
+            return redirect(url_for("task_detail", task_id=task.id))
+
+    return render_template(
+        "task_form.html",
+        heading=f"Редагування задачі #{task.id}",
+        action_url=url_for("edit_task", task_id=task.id),
+        cancel_url=url_for("task_detail", task_id=task.id),
         statuses=TaskStatus,
         error=error,
         title=title,

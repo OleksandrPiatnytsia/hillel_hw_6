@@ -279,3 +279,50 @@ a.page-link:hover {
 .page-link.disabled {
     opacity: 0.4;
 }
+
+a.task-card {
+    text-decoration: none;
+    color: inherit;
+    transition: 0.2s;
+}
+
+a.task-card:hover {
+    border-color: #3b82f6;
+    transform: translateY(-2px);
+}
+
+.back-link {
+    color: #cbd5e1;
+    text-decoration: none;
+    transition: 0.2s;
+}
+
+.back-link:hover {
+    color: white;
+}
+
+.task-detail {
+    background: #1e293b;
+    border: 1px solid #334155;
+    border-radius: 16px;
+    padding: 28px;
+    max-width: 720px;
+}
+
+.task-detail-meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+}
+
+.task-id {
+    color: #94a3b8;
+    font-size: 14px;
+}
+
+.task-detail-title {
+    font-size: 26px;
+    line-height: 1.4;
+    overflow-wrap: anywhere;
+}

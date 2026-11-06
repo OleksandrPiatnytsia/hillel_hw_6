@@ -5,6 +5,8 @@ from serialization.json_serialization import JsonDataSerialization
 
 app = Flask(__name__)
 
+TASKS_PER_PAGE = 9
+
 
 def get_tasks() -> list[Task]:
     return [Task.from_dict(item) for item in JsonDataSerialization.load_tasks()]
@@ -26,7 +28,22 @@ def index():
 
 @app.route("/tasks")
 def tasks():
-    return render_template("tasks.html", tasks=get_tasks())
+    all_tasks = get_tasks()
+    total_pages = max(1, -(-len(all_tasks) // TASKS_PER_PAGE))  # ділення з округленням вгору
+
+    page = request.args.get("page", 1, type=int)
+    page = min(max(page, 1), total_pages)
+
+    start = (page - 1) * TASKS_PER_PAGE
+    page_tasks = all_tasks[start:start + TASKS_PER_PAGE]
+
+    return render_template(
+        "tasks.html",
+        tasks=page_tasks,
+        total=len(all_tasks),
+        page=page,
+        total_pages=total_pages,
+    )
 
 
 @app.route("/tasks/add", methods=["GET", "POST"])
@@ -48,7 +65,8 @@ def add_task():
             new_id = max((task.id for task in all_tasks), default=0) + 1
             all_tasks.append(Task(new_id, title, TaskStatus(status)))
             save_tasks(all_tasks)
-            return redirect(url_for("tasks"))
+            last_page = -(-len(all_tasks) // TASKS_PER_PAGE)
+            return redirect(url_for("tasks", page=last_page))
 
     return render_template(
         "add_task.html",

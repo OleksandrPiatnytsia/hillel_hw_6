@@ -14,6 +14,21 @@ body {
     width: min(1100px, 90%);
     margin: 0 auto;
     padding: 40px 0;
+    /* контейнер на всю висоту екрана, щоб пагінацію можна було притиснути донизу */
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+.content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+/* щоб окремі кнопки в контенті не розтягувались на всю ширину */
+.content > .button {
+    align-self: flex-start;
 }
 
 .header {
@@ -64,7 +79,7 @@ body {
 
 .tasks-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
     gap: 20px;
 }
 
@@ -77,11 +92,19 @@ body {
     justify-content: space-between;
     align-items: center;
     gap: 16px;
+    height: 110px;
 }
 
 .task-title {
     font-size: 18px;
     font-weight: 500;
+    line-height: 1.4;
+    /* максимум 2 рядки, решта обрізається з "..." */
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    overflow-wrap: anywhere;
 }
 
 .status {
@@ -219,4 +242,40 @@ button.button {
 .stat-count {
     font-size: 36px;
     font-weight: 700;
+}
+
+.pagination {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: auto; /* притискає пагінацію до низу */
+    padding-top: 30px;
+}
+
+.page-link {
+    min-width: 40px;
+    text-align: center;
+    padding: 8px 12px;
+    border-radius: 10px;
+    background: #1e293b;
+    border: 1px solid #334155;
+    color: #cbd5e1;
+    text-decoration: none;
+    transition: 0.2s;
+}
+
+a.page-link:hover {
+    background: #334155;
+    color: white;
+}
+
+.page-link.active {
+    background: #3b82f6;
+    border-color: #3b82f6;
+    color: white;
+}
+
+.page-link.disabled {
+    opacity: 0.4;
 }
